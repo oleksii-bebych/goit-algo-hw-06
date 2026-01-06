@@ -32,32 +32,31 @@ class Record:
         self.phones = []
 
     def add_phone(self, phone):
-        phone_obj = Phone(phone)
-        if phone not in [p.value for p in self.phones]:
-            self.phones.append(phone_obj)
-        else:
+        if self.find_phone(phone):
             raise ValueError(f"Phone {phone} already exists")
+        phone_obj = Phone(phone)
+        self.phones.append(phone_obj)
 
     def remove_phone(self, phone):
-        for phone_obj in self.phones:
-            if phone_obj.value == phone:
-                self.phones.remove(phone_obj)
-                return
-        raise ValueError(f"Phone {phone} not found")
+        phone_obj = self.find_phone(phone)
+        if phone_obj:
+            self.phones.remove(phone_obj)
+        else:
+            raise ValueError(f"Phone {phone} not found")
 
     def edit_phone(self, old_phone, new_phone):
-        new_phone_obj = Phone(new_phone)
-        
-        for i, phone_obj in enumerate(self.phones):
-            if phone_obj.value == old_phone:
-                self.phones[i] = new_phone_obj
-                return
-        raise ValueError(f"Phone {old_phone} not found")
+        phone_obj = self.find_phone(old_phone)
+        if phone_obj:
+            new_phone_obj = Phone(new_phone)
+            index = self.phones.index(phone_obj)
+            self.phones[index] = new_phone_obj
+        else:
+            raise ValueError(f"Phone {old_phone} not found")
 
     def find_phone(self, phone):
         for phone_obj in self.phones:
             if phone_obj.value == phone:
-                return phone_obj.value
+                return phone_obj
         return None
 
     def __str__(self):
@@ -117,7 +116,7 @@ if __name__ == "__main__":
 
     # Пошук конкретного телефону у записі John
     found_phone = john.find_phone("5555555555")
-    print(f"{john.name}: {found_phone}")  # Виведення: John: 5555555555
+    print(f"{john.name}: {found_phone.value}")  # Виведення: John: 5555555555
 
     # Видалення запису Jane
     book.delete("Jane")
